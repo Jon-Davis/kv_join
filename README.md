@@ -58,8 +58,8 @@ two can be nested to produce more complicated logic:
 ```rust
 for (k, v) in kvor_join!(kvand_join!(a,b,c), d){
    match v {
-      Some(( Some((av, bv, cv)), Some(dv) )) => (), //a and b and c and d
-      Some(( Some(av, bv, cv), None )) => (), // a and b and c and not d
+      Some(( Some((av, bv, cv)), Some(dv) )) => (), //a and b and c and optional d
+      Some(( Some((av, bv, cv)), None )) => (), // a and b and c and not d
       Some(( None, Some(dv) )) => (), // d and not a and b and c
       _ => (),
    }
