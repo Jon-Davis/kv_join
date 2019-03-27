@@ -127,3 +127,45 @@ fn test_kvor_join() {
     assert!(*v2.expect("Second value of Fourth iteration is None") == 0.3, "Second value of Fourth iteration is incorrect");
     assert!(iter.next().is_none());
 }
+
+#[test]
+fn test_nest() {
+    use std::collections::BTreeMap;
+
+    let mut ints = BTreeMap::new();
+    ints.insert(0,0);
+    ints.insert(2,2);
+    ints.insert(3,3);
+
+    let mut bools = BTreeMap::new();
+    bools.insert(0,true);
+    bools.insert(2,true);
+    bools.insert(3,false);
+
+    let mut floats = BTreeMap::new();
+    floats.insert(0,0.0);
+    floats.insert(1,0.1);
+    floats.insert(3,0.3);
+
+    let mut iter = kvor_join!(kvand_join!(ints.iter(), bools.iter()), floats.iter());
+    match iter.next() {
+        Some((0, (Some((0, true)), Some(f)))) if *f == 0.0 => (),
+        _ => assert!(false),
+    }
+    match iter.next() {
+        Some((1, (None, Some(f)))) if *f == 0.1 => (),
+        _ => assert!(false),
+    }
+    match iter.next() {
+        Some((2, (Some((2, true)), None))) => (),
+        _ => assert!(false),
+    }
+    match iter.next() {
+        Some((3, (Some((3, false)), Some(f)))) if *f == 0.3 => (),
+        _ => assert!(false),
+    }
+    match iter.next() {
+        None => (),
+        _ => assert!(false),
+    }
+}
